@@ -15,3 +15,13 @@ In this tutorial:
 - Select logging destinations using command-line arguments.
 - Verify that messages are filtered and written to the expected destinations.
 
+## Prerequisites
+
+The following tools and dependencies are required:
+
+- A Linux development environment.
+- A C++17-compatible compiler, such as GCC.
+- CMake 3.16 or later.
+- The spdlog development library.
+
+For instructions on preparing a Chromebook development environment, see [Set up a C++ development environment on a Chromebook](chromebook-setup.md).
