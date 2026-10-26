@@ -25,3 +25,34 @@ The following tools and dependencies are required:
 - The spdlog development library.
 
 For instructions on preparing a Chromebook development environment, see [Set up a C++ development environment on a Chromebook](chromebook-setup.md).
+
+## Build the application
+
+The project uses CMake to configure and build the C++ application. CMake locates the installed `spdlog` library and links it to the executable.
+
+1. Clone the repository:
+
+   ```bash
+   git clone https://github.com/LisaTechDocs/cpp-logging-tutorial.git
+
+2. From the repository root configure the build:
+
+    ```bash
+    cmake -S . -B build
+    ```
+3. Build the application:
+
+    ```bash
+    cmake --build build
+    ```
+
+### Verify the build
+
+The build completes without errors and creates the `logging_example` executable in the `build` directory.
+
+**Expected output:**
+
+```text
+[100%] Built target logging_example
+```
+
