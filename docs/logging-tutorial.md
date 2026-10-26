@@ -256,5 +256,64 @@ The following results confirm that the selected logging mode determines where me
 All three modes apply the same severity thresholds. Changing the logging destination does not affect message filtering.
 
 
+## Troubleshooting
+
+### CMake cannot find spdlog
+
+**Problem:** CMake fails to configure the project and reports that it cannot find `spdlog`.
+
+**Solution:** Install the `spdlog` development package:
+
+```bash
+sudo apt update
+sudo apt install libspdlog-dev
+```
+
+Run the CMake configuration command again:
+
+```bash
+cmake -S . -B build
+```
+
+### The executable cannot be found
+
+**Problem:** Running `./build/logging_example` returns `No such file or directory`.
+
+**Solution:** Confirm that the application has been built:
+
+```bash
+cmake --build build
+```
+
+Run the executable from the repository's root directory.
+
+### No messages appear in the terminal
+
+**Problem:** The application runs without displaying log messages.
+
+**Solution:** Check the selected logging mode. The `file` mode writes messages to `logging.log` rather than the terminal.
+
+To display messages in the terminal, run:
+
+```bash
+./build/logging_example console
+```
+
+### The log file contains unexpected messages
+
+**Problem:** `logging.log` contains messages from previous executions.
+
+**Solution:** The file sink uses append mode, which preserves existing log messages.
+
+Remove the existing file before running the application:
+
+```bash
+rm -f logging.log
+./build/logging_example file
+```
+
+The new log file contains only messages from the current execution.
+
+
 
 
