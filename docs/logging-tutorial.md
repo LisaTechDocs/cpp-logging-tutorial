@@ -123,3 +123,86 @@ Three logging modes are available:
 The selected sinks are shared by all three named loggers. Each logger retains its independently configured minimum severity threshold.
 
 The file sink uses append mode, so subsequent executions add messages to the existing log file.
+
+
+## Run the application
+
+The application supports three logging modes: console, file and combined output. Each mode uses the same severity thresholds but writes messages to different destinations.
+
+### Run with console logging
+
+Run the application with the `console` argument:
+
+```bash
+./build/logging_example console
+```
+
+The application writes messages that meet the configured severity thresholds to the terminal.
+
+**Expected output:**
+
+
+**Example output (timestamps omitted for clarity):**
+
+```text
+[sensor] [info] Sensor reading received
+[sensor] [warning] Sensor reading outside expected range
+[sensor] [error] Sensor connection lost
+[control] [warning] Control response delayed
+[control] [error] Control operation failed
+[output] [error] Output operation failed
+```
+
+The application emits six of the nine generated messages. Messages below each logger's configured minimum severity are suppressed.
+
+
+
+## Run with file logging
+
+Remove any existing log file to ensure that the test starts with an empty log:
+
+```bash
+rm -f logging.log
+```
+
+Run the application with the `file` argument:
+
+```bash
+./build/logging_example file
+```
+
+The application writes the filtered messages to `logging.log` in the current working directory.
+
+Display the log file contents:
+
+```bash
+cat logging.log
+```
+
+
+**Expected output:**
+
+_To be added after testing._
+
+### Run with combined logging
+
+Run the application with the `both` argument:
+
+```bash
+rm -f logging.log
+./build/logging_example both
+```
+
+The application writes the filtered messages to both the terminal and `logging.log`.
+
+Display the log file contents:
+
+```bash
+cat logging.log
+```
+
+**Expected output:**
+
+_To be added after testing._
+
+The file sink uses append mode. Removing `logging.log` before each test prevents messages from previous executions from appearing in the results.
