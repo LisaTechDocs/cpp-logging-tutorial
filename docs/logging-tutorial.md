@@ -181,9 +181,6 @@ cat logging.log
 
 **Expected output:**
 
-
-**Example output (timestamps omitted for clarity):**
-
 ```text
 [sensor] [info] Sensor reading received
 [sensor] [warning] Sensor reading outside expected range
@@ -214,9 +211,6 @@ cat logging.log
 
 **Expected output:**
 
-
-**Example output (timestamps omitted for clarity):**
-
 The application displays six messages in the terminal:
 
 ```text
@@ -231,6 +225,36 @@ The application displays six messages in the terminal:
 The `cat logging.log` command displays the same six messages from the log file.
 
 Both destinations receive identical messages, and the configured severity thresholds apply to each logger.
+
+
+## Verify logging behaviour
+
+The application generates nine logging calls across three named loggers. Each logger filters messages according to its configured minimum severity threshold.
+
+### Verify severity filtering
+
+The following table summarises the expected results:
+
+| Logger | Minimum severity | Info | Warning | Error |
+|---|---|---|---|---|
+| `sensor` | `trace` | Emitted | Emitted | Emitted |
+| `control` | `warn` | Suppressed | Emitted | Emitted |
+| `output` | `error` | Suppressed | Suppressed | Emitted |
+
+Six messages are emitted and three are suppressed.
+
+### Verify logging destinations
+
+The following results confirm that the selected logging mode determines where messages are written:
+
+| Mode | Terminal | Log file |
+|---|---|---|
+| `console` | Six messages | No messages written |
+| `file` | No messages displayed | Six messages |
+| `both` | Six messages | Six messages |
+
+All three modes apply the same severity thresholds. Changing the logging destination does not affect message filtering.
+
 
 
 
