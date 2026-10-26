@@ -86,3 +86,40 @@ Messages below the configured minimum severity are suppressed.
 For example, the `control` logger suppresses info messages but emits warning and error messages.
 
 The application generates three messages for each logger, resulting in nine logging calls. The configured thresholds allow six messages to be emitted.
+
+
+### Configure logging destinations
+
+The application uses `spdlog` sinks to determine where log messages are written. Each sink represents an output destination.
+
+The following sinks are configured in `src/main.cpp`:
+
+- `stdout_color_sink_mt`: Writes coloured log messages to the terminal.
+- `basic_file_sink_mt`: Writes log messages to `logging.log`.
+
+The application selects the sinks using a command-line argument.
+
+```cpp
+if (mode == "console" || mode == "both") {
+    sinks.push_back(
+        std::make_shared<spdlog::sinks::stdout_color_sink_mt>());
+}
+
+if (mode == "file" || mode == "both") {
+    sinks.push_back(
+        std::make_shared<spdlog::sinks::basic_file_sink_mt>(
+            "logging.log", true));
+}
+```
+
+Three logging modes are available:
+
+| Mode | Destination | Argument |
+|---|---|---|
+| Console | Terminal | `console` |
+| File | `logging.log` | `file` |
+| Combined | Terminal and `logging.log` | `both` |
+
+The selected sinks are shared by all three named loggers. Each logger retains its independently configured minimum severity threshold.
+
+The file sink uses append mode, so subsequent executions add messages to the existing log file.
