@@ -56,3 +56,33 @@ The build completes without errors and creates the `logging_example` executable 
 [100%] Built target logging_example
 ```
 
+
+## Configure logging
+
+The application uses the `spdlog` library to configure three named loggers: `sensor`, `control` and `output`.
+
+Each logger represents a separate application component and has an independent minimum severity threshold.
+
+### Configure severity thresholds
+
+The application sets the minimum severity level for each logger using the `set_level()` method in `src/main.cpp`:
+
+```cpp
+sensor->set_level(spdlog::level::trace);
+control->set_level(spdlog::level::warn);
+output->set_level(spdlog::level::err);
+```
+
+The configured thresholds determine which messages are emitted.
+
+| Logger | Minimum severity | Messages emitted |
+|---|---|---|
+| `sensor` | `trace` | Info, warning and error |
+| `control` | `warn` | Warning and error |
+| `output` | `error` | Error only |
+
+Messages below the configured minimum severity are suppressed.
+
+For example, the `control` logger suppresses info messages but emits warning and error messages.
+
+The application generates three messages for each logger, resulting in nine logging calls. The configured thresholds allow six messages to be emitted.
