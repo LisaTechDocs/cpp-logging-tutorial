@@ -315,5 +315,18 @@ rm -f logging.log
 The new log file contains only messages from the current execution.
 
 
+## Next steps
+
+The application demonstrates severity filtering and multiple logging destinations using `spdlog`.
+
+To explore additional logging functionality:
+
+- Modify the severity thresholds in `src/main.cpp` and compare the output.
+- Experiment with different log message formats using `set_pattern()`.
+- Explore additional sinks, such as rotating file sinks, to manage log file size.
+
+For more information, see the [spdlog documentation](https://github.com/gabime/spdlog).
+
+
 
 
