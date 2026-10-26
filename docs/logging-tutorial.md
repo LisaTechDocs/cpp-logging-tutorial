@@ -179,10 +179,21 @@ Display the log file contents:
 cat logging.log
 ```
 
-
 **Expected output:**
 
-_To be added after testing._
+
+**Example output (timestamps omitted for clarity):**
+
+```text
+[sensor] [info] Sensor reading received
+[sensor] [warning] Sensor reading outside expected range
+[sensor] [error] Sensor connection lost
+[control] [warning] Control response delayed
+[control] [error] Control operation failed
+[output] [error] Output operation failed
+```
+
+The log file contains six messages that meet the configured severity thresholds. Messages below each logger's minimum severity are suppressed.
 
 ### Run with combined logging
 
