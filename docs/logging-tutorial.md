@@ -159,7 +159,7 @@ The application emits six of the nine generated messages. Messages below each lo
 
 ## Run with file logging
 
-Remove any existing log file to ensure that the test starts with an empty log:
+The file sink uses append mode. Removing `logging.log` before each test prevents messages from previous executions from appearing in the results. Remove any existing log file to ensure that the test starts with an empty log:
 
 ```bash
 rm -f logging.log
@@ -214,6 +214,23 @@ cat logging.log
 
 **Expected output:**
 
-_To be added after testing._
 
-The file sink uses append mode. Removing `logging.log` before each test prevents messages from previous executions from appearing in the results.
+**Example output (timestamps omitted for clarity):**
+
+The application displays six messages in the terminal:
+
+```text
+[sensor] [info] Sensor reading received
+[sensor] [warning] Sensor reading outside expected range
+[sensor] [error] Sensor connection lost
+[control] [warning] Control response delayed
+[control] [error] Control operation failed
+[output] [error] Output operation failed
+```
+
+The `cat logging.log` command displays the same six messages from the log file.
+
+Both destinations receive identical messages, and the configured severity thresholds apply to each logger.
+
+
+
