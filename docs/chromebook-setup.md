@@ -11,3 +11,4 @@ The setup uses Debian Linux, GCC, CMake and Git. Once configured, the environmen
 - A GitHub account
 
 ## Enable the Linux development environment
+
