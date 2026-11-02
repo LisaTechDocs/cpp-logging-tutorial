@@ -279,15 +279,11 @@ The new log file contains only messages from the current execution.
 
 ## Next steps
 
-The application demonstrates severity filtering and multiple logging destinations using `spdlog`.
+Extend the example by collecting and exploring its structured logs in Grafana.
 
-To explore additional logging functionality:
+Follow [Collect and explore C++ application logs with Grafana Alloy, Loki and Grafana](grafana-loki-tutorial.md) to configure log collection, query events and visualise the results.
 
-- Modify the severity thresholds in `src/main.cpp` and compare the output.
-- Experiment with different log message formats using `set_pattern()`.
-- Explore additional sinks, such as rotating file sinks, to manage log file size.
-
-For more information, see the [spdlog documentation](https://github.com/gabime/spdlog).
+For more information about logging configuration, see the [spdlog documentation](https://github.com/gabime/spdlog).
 
 
 
