@@ -2,9 +2,9 @@
 
 ## Overview 
 
-This tutorial demonstrates how to configure structured logging in a C++ application using spdlog, an open-source C++ logging library.
+In this tutorial, you'll configure structured logging in a C++ application using spdlog, an open-source C++ logging library.
 
-The example application simulates a temperature-monitoring and cooling-control system. Three named loggers (sensor, control and output) generate events representing temperature readings, control responses and actuator failures. Each logger has an independent severity threshold, and log messages are formatted as JSON. Logs can be writen to the terminal, a file or both destinations.
+The example application simulates a temperature-monitoring and cooling-control system. Three named loggers (sensor, control and output) generate events representing temperature readings, control responses and actuator failures. Each logger has an independent severity threshold, and log messages are formatted as JSON. Logs can be written to the terminal, a file or both destinations.
 
 In this tutorial:
 
@@ -15,7 +15,7 @@ In this tutorial:
 
 ## Prerequisites
 
-The following tools and dependencies are required:
+Before you begin, make sure you have the following tools and dependencies:
 
 - A Linux development environment.
 - A C++17-compatible compiler, such as GCC.
@@ -42,7 +42,7 @@ The project uses CMake to configure and build the application. CMake locates the
    cd cpp-logging-tutorial
    ```
 
-2. From the repository root configure the build:
+2. From the repository root, configure the build:
 
     ```bash
     cmake -S . -B build
@@ -85,7 +85,7 @@ The configured thresholds determine which messages are emitted.
 |---|---|---|
 | `sensor` | `trace` | Trace, debug, info, warning, error, critical |
 | `control` | `warn` | Warning, error, critical |
-| `output` | `error` | Error, critial |
+| `output` | `error` | Error, critical |
 
 Messages below the configured minimum severity are suppressed.
 
@@ -164,8 +164,6 @@ Each mode produces six JSON log entries. The following example shows two entries
 ```
 
 The remaining entries report a temperature threshold warning, a sensor timeout, a cooling-control failure and an actuator-command failure.
-
-The `rm -f logging.log` command removes any existing log file so that each test starts with an empty file.
 
 
 ## Verify logging behaviour
@@ -279,9 +277,9 @@ The new log file contains only messages from the current execution.
 
 ## Next steps
 
-Extend the example by collecting and exploring its structured logs in Grafana.
+Now that you've configured and verified structured logging, you can collect and explore your application's logs in Grafana.
 
-Follow [Collect and explore C++ application logs with Grafana Alloy, Loki and Grafana](grafana-loki-tutorial.md) to configure log collection, query events and visualise the results.
+Follow [Send C++ application logs to Grafana Loki using Alloy](send-cpp-logs-to-loki.md) to configure log collection, query events and visualise the results.
 
 For more information about logging configuration, see the [spdlog documentation](https://github.com/gabime/spdlog).
 
