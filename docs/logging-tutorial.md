@@ -1,12 +1,10 @@
-# Configure and verify logging in a C++ application
+# Configure and verify structured logging in a C++ application
 
 ## Overview 
 
-This tutorial demonstrates how to configure application logging using `spdlog`, an open-source C++ logging library.
+This tutorial demonstrates how to configure structured logging in a C++ application using `spdlog`, an open-source C++ logging library.
 
-The example application uses three named loggers with independent severity thresholds. It supports logging to the terminal, a file or both destinations.
-
-This tutorial demonstrates how to configure named loggers with independent severity thresholds.
+The example application simulates a temperature-monitoring and cooling-control system. Three named loggers (sensor, control and output) generate events representing temperature readings, control responses and actuator failures. Each logger has an independent severity threshold, and log messages are formatted as JSON. Logs can be writen to the terminal, a file or both destinations.
 
 In this tutorial:
 
@@ -22,21 +20,19 @@ The following tools and dependencies are required:
 - A Linux development environment.
 - A C++17-compatible compiler, such as GCC.
 - CMake 3.16 or later.
-- The spdlog development library.
-- The `nlohmann/json development library, version 3.2.0 or later.
+- The `spdlog` development library.
+- The `nlohmann/json` development library, version 3.2.0 or later.
 
-On Ubuntu, install the rquired libraries:
+On Ubuntu, install the required libraries:
 
 ```bash
 sudo apt update
 sudo apt install libspdlog-dev nlohmann-json3-dev
 ```
 
-For instructions on preparing a Chromebook development environment, see [Set up a C++ development environment on a Chromebook](chromebook-setup.md).
-
 ## Build the application
 
-The project uses CMake to configure and build the C++ application. CMake locates the installed `spdlog` library and links it to the executable.
+The project uses CMake to configure and build the application. CMake locates the installed `spdlog` and `nlohmann/json` libraries and makes them available to the executable.
 
 1. Clone the repository:
 
@@ -65,7 +61,6 @@ The build completes without errors and creates the `logging_example` executable 
 [100%] Built target logging_example
 ```
 
-
 ## Configure logging
 
 The application uses the `spdlog` library to configure three named loggers: `sensor`, `control` and `output`.
@@ -84,18 +79,17 @@ output->set_level(spdlog::level::err);
 
 The configured thresholds determine which messages are emitted.
 
-| Logger | Minimum severity | Messages emitted |
+| Logger | Minimum severity | Permitted severity levels |
 |---|---|---|
-| `sensor` | `trace` | Info, warning, error, trace and debug |
-| `control` | `warn` | Warning and error |
-| `output` | `error` | Error only |
+| `sensor` | `trace` | Trace, debug, info, warning, error, critical |
+| `control` | `warn` | Warning, error, critical |
+| `output` | `error` | Error, critial |
 
 Messages below the configured minimum severity are suppressed.
 
-For example, the `control` logger suppresses info messages but emits warning and error messages.
+For example, the `control` logger suppresses info messages but emits warning, error and critical messages.
 
-The application generates three messages for each logger, resulting in nine logging calls. The configured thresholds allow six messages to be emitted.
-
+The application makes nine logging calls across the three loggers. Six messages meet the configured severity thresholds and are emitted; the remaining three are suppressed.
 
 ### Configure logging destinations
 
@@ -138,130 +132,92 @@ The file sink uses append mode, so subsequent executions add messages to the exi
 
 The application supports three logging modes: console, file and combined output. Each mode uses the same severity thresholds but writes messages to different destinations.
 
-### Run with console logging
+1. **Console logging:** Run the application with the `console` argument to display log messages in the terminal.
 
-Run the application with the `console` argument:
+   ```bash
+   ./build/logging_example console
+   ```
 
-```bash
-./build/logging_example console
+2. **File logging:** Run the application with the `file` argument to write log messages to `logging.log` in the current working directory.
+
+   ```bash
+   rm -f logging.log
+   ./build/logging_example file
+   cat logging.log
+   ```
+
+3. **Combined logging:** Run the application with the `both` argument to write log messages to the terminal and `logging.log`.
+
+   ```bash
+   rm -f logging.log
+   ./build/logging_example both
+   cat logging.log
+   ```
+
+   The terminal and log file contain the same messages.
+
+**Expected output (timestamps removed)**
+
+Each mode produces six JSON log entries. The following example shows two entries:
+
+```json
+{"component":"sensor","event":"temperature_reading","level":"info","message":"Temperature reading received","sensor_id":"temp_01","temperature_c":24.5}
+{"component":"control","cycle_id":42,"elapsed_ms":250,"event":"cooling_response_delayed","level":"warning","limit_ms":200,"message":"Cooling response exceeded the configured limit"}
 ```
 
-The application writes messages that meet the configured severity thresholds to the terminal.
+The remaining entries report a temperature threshold warning, a sensor timeout, a cooling-control failure and an actuator-command failure.
 
-**Expected output:**
-
-
-**Example output (timestamps omitted for clarity):**
-
-```text
-[sensor] [info] Sensor reading received
-[sensor] [warning] Sensor reading outside expected range
-[sensor] [error] Sensor connection lost
-[control] [warning] Control response delayed
-[control] [error] Control operation failed
-[output] [error] Output operation failed
-```
-
-The application emits six of the nine generated messages. Messages below each logger's configured minimum severity are suppressed.
-
-
-## Run with file logging
-
-The file sink uses append mode. Removing `logging.log` before each test prevents messages from previous executions from appearing in the results. Remove any existing log file to ensure that the test starts with an empty log:
-
-```bash
-rm -f logging.log
-```
-
-Run the application with the `file` argument:
-
-```bash
-./build/logging_example file
-```
-
-The application writes the filtered messages to `logging.log` in the current working directory.
-
-Display the log file contents:
-
-```bash
-cat logging.log
-```
-
-**Expected output:**
-
-```text
-[sensor] [info] Sensor reading received
-[sensor] [warning] Sensor reading outside expected range
-[sensor] [error] Sensor connection lost
-[control] [warning] Control response delayed
-[control] [error] Control operation failed
-[output] [error] Output operation failed
-```
-
-The log file contains six messages that meet the configured severity thresholds. Messages below each logger's minimum severity are suppressed.
-
-### Run with combined logging
-
-Run the application with the `both` argument:
-
-```bash
-rm -f logging.log
-./build/logging_example both
-```
-
-The application writes the filtered messages to both the terminal and `logging.log`.
-
-Display the log file contents:
-
-```bash
-cat logging.log
-```
-
-**Expected output:**
-
-The application displays six messages in the terminal:
-
-```text
-[sensor] [info] Sensor reading received
-[sensor] [warning] Sensor reading outside expected range
-[sensor] [error] Sensor connection lost
-[control] [warning] Control response delayed
-[control] [error] Control operation failed
-[output] [error] Output operation failed
-```
-
-The `cat logging.log` command displays the same six messages from the log file.
-
-Both destinations receive identical messages, and the configured severity thresholds apply to each logger.
+The file sink uses append mode. The `rm -f logging.log` command removes any existing log file so that each test starts with an empty file.
 
 
 ## Verify logging behaviour
 
-The application generates nine logging calls across three named loggers. Each logger filters messages according to its configured minimum severity threshold.
+Use the log file generated with the `both` mode to verify severity filtering, logging destinations and JSON formatting.
 
 ### Verify severity filtering
 
-The following table summarises the expected results:
+Count the messages written to the log file:
 
-| Logger | Minimum severity | Info | Warning | Error |
-|---|---|---|---|---|
-| `sensor` | `trace` | Emitted | Emitted | Emitted |
-| `control` | `warn` | Suppressed | Emitted | Emitted |
-| `output` | `error` | Suppressed | Suppressed | Emitted |
+```bash
+wc -l logging.log
+```
 
-Six messages are emitted and three are suppressed.
+**Expected result:** The file contains six log entries.
 
-### Verify logging destinations
+Display the component, severity and event identifier for each entry:
 
-The following results confirm that the selected logging mode determines where messages are written:
+```bash
+jq -r '[.component, .level, .event] | @tsv' logging.log
+```
 
-| Mode | Terminal | Log file |
-|---|---|---|
-| `console` | Six messages | No messages written |
-| `file` | No messages displayed | Six messages |
-| `both` | Six messages | Six messages |
+**Expected output:**
 
-All three modes apply the same severity thresholds. Changing the logging destination does not affect message filtering.
+```text
+sensor   info     temperature_reading
+sensor   warning  temperature_threshold_exceeded
+sensor   error    sensor_read_timeout
+control  warning  cooling_response_delayed
+control  error    cooling_control_failed
+output   error    actuator_command_failed
+```
+
+The output confirms that the `control` logger suppresses info messages and the `output` logger emits only error messages.
+
+### Verify JSON formatting
+
+Parse the log file using `jq`:
+
+```bash
+jq -c . logging.log
+```
+
+The command displays each entry as a compact JSON object. If the file contains invalid JSON, `jq` reports a parsing error.
+
+To display the entries without timestamps, run:
+
+```bash
+jq -c 'del(.timestamp)' logging.log
+```
 
 
 ## Troubleshooting
