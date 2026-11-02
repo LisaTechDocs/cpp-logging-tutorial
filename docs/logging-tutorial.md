@@ -2,13 +2,13 @@
 
 ## Overview 
 
-This tutorial demonstrates how to configure structured logging in a C++ application using `spdlog`, an open-source C++ logging library.
+This tutorial demonstrates how to configure structured logging in a C++ application using spdlog, an open-source C++ logging library.
 
 The example application simulates a temperature-monitoring and cooling-control system. Three named loggers (sensor, control and output) generate events representing temperature readings, control responses and actuator failures. Each logger has an independent severity threshold, and log messages are formatted as JSON. Logs can be writen to the terminal, a file or both destinations.
 
 In this tutorial:
 
-- Build a C++ application with CMake and `spdlog`.
+- Build a C++ application with CMake and spdlog.
 - Configure named loggers with different minimum severity levels.
 - Select logging destinations using command-line arguments.
 - Verify that messages are filtered and written to the expected destinations.
@@ -20,24 +20,26 @@ The following tools and dependencies are required:
 - A Linux development environment.
 - A C++17-compatible compiler, such as GCC.
 - CMake 3.16 or later.
-- The `spdlog` development library.
-- The `nlohmann/json` development library, version 3.2.0 or later.
+- The spdlog development library.
+- The nlohmann/json development library, version 3.2.0 or later.
+- The `jq` command-line tool for parsing and verifying JSON log output.
 
-On Ubuntu, install the required libraries:
+On Ubuntu, install the required libraries and tools:
 
 ```bash
 sudo apt update
-sudo apt install libspdlog-dev nlohmann-json3-dev
+sudo apt install libspdlog-dev nlohmann-json3-dev jq
 ```
 
 ## Build the application
 
-The project uses CMake to configure and build the application. CMake locates the installed `spdlog` and `nlohmann/json` libraries and makes them available to the executable.
+The project uses CMake to configure and build the application. CMake locates the installed spdlog and nlohmann/json libraries and makes them available to the executable.
 
-1. Clone the repository:
+1. Clone the repository and navigate to the project directory:
 
    ```bash
    git clone https://github.com/LisaTechDocs/cpp-logging-tutorial.git
+   cd cpp-logging-tutorial
    ```
 
 2. From the repository root configure the build:
@@ -130,8 +132,6 @@ The file sink uses append mode, so subsequent executions add messages to the exi
 
 ## Run the application
 
-The application supports three logging modes: console, file and combined output. Each mode uses the same severity thresholds but writes messages to different destinations.
-
 1. **Console logging:** Run the application with the `console` argument to display log messages in the terminal.
 
    ```bash
@@ -141,7 +141,6 @@ The application supports three logging modes: console, file and combined output.
 2. **File logging:** Run the application with the `file` argument to write log messages to `logging.log` in the current working directory.
 
    ```bash
-   rm -f logging.log
    ./build/logging_example file
    cat logging.log
    ```
@@ -149,14 +148,13 @@ The application supports three logging modes: console, file and combined output.
 3. **Combined logging:** Run the application with the `both` argument to write log messages to the terminal and `logging.log`.
 
    ```bash
-   rm -f logging.log
    ./build/logging_example both
    cat logging.log
    ```
 
-   The terminal and log file contain the same messages.
+The terminal and log file contain the same messages.
 
-**Expected output (timestamps removed)**
+**Example output (timestamps omitted)**
 
 Each mode produces six JSON log entries. The following example shows two entries:
 
@@ -167,12 +165,19 @@ Each mode produces six JSON log entries. The following example shows two entries
 
 The remaining entries report a temperature threshold warning, a sensor timeout, a cooling-control failure and an actuator-command failure.
 
-The file sink uses append mode. The `rm -f logging.log` command removes any existing log file so that each test starts with an empty file.
+The `rm -f logging.log` command removes any existing log file so that each test starts with an empty file.
 
 
 ## Verify logging behaviour
 
-Use the log file generated with the `both` mode to verify severity filtering, logging destinations and JSON formatting.
+Remove any existing log file and run the application to generate a new set of log entries:
+
+```bash
+rm -f logging.log
+./build/logging_example both
+```
+
+Use `logging.log` to verify severity filtering and JSON formatting.
 
 ### Verify severity filtering
 
@@ -211,14 +216,7 @@ Parse the log file using `jq`:
 jq -c . logging.log
 ```
 
-The command displays each entry as a compact JSON object. If the file contains invalid JSON, `jq` reports a parsing error.
-
-To display the entries without timestamps, run:
-
-```bash
-jq -c 'del(.timestamp)' logging.log
-```
-
+**Expected result:** The command successfully parses and displays six JSON objects, one per line. If the file contains invalid JSON, `jq` reports a parsing error.
 
 ## Troubleshooting
 
