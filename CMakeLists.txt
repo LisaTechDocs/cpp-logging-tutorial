@@ -7,6 +7,11 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 find_package(spdlog REQUIRED)
 
+find_package(nlohmann_json 3.2.0 REQUIRED)
+
 add_executable(logging_example src/main.cpp)
 
-target_link_libraries(logging_example PRIVATE spdlog::spdlog)
+target_link_libraries(logging_example PRIVATE
+    spdlog::spdlog
+    nlohmann_json::nlohmann_json
+)

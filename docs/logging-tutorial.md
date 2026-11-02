@@ -23,6 +23,14 @@ The following tools and dependencies are required:
 - A C++17-compatible compiler, such as GCC.
 - CMake 3.16 or later.
 - The spdlog development library.
+- The `nlohmann/json development library, version 3.2.0 or later.
+
+On Ubuntu, install the rquired libraries:
+
+```bash
+sudo apt update
+sudo apt install libspdlog-dev nlohmann-json3-dev
+```
 
 For instructions on preparing a Chromebook development environment, see [Set up a C++ development environment on a Chromebook](chromebook-setup.md).
 
@@ -34,6 +42,7 @@ The project uses CMake to configure and build the C++ application. CMake locates
 
    ```bash
    git clone https://github.com/LisaTechDocs/cpp-logging-tutorial.git
+   ```
 
 2. From the repository root configure the build:
 
@@ -77,7 +86,7 @@ The configured thresholds determine which messages are emitted.
 
 | Logger | Minimum severity | Messages emitted |
 |---|---|---|
-| `sensor` | `trace` | Info, warning and error |
+| `sensor` | `trace` | Info, warning, error, trace and debug |
 | `control` | `warn` | Warning and error |
 | `output` | `error` | Error only |
 
@@ -154,7 +163,6 @@ The application writes messages that meet the configured severity thresholds to 
 ```
 
 The application emits six of the nine generated messages. Messages below each logger's configured minimum severity are suppressed.
-
 
 
 ## Run with file logging
